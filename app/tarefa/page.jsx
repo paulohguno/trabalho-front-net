@@ -5,10 +5,10 @@ import { GiConfirmed } from "react-icons/gi";
 import { useState } from "react";
 import Image from "next/image";
 import BlogHeader from "@/components/ui/navbar";
+import Modal from "@/components/ui/modal";
 
 export default function Tarefa() {
-    const [, setOpen] = useState(false);
-
+    const [open, setOpen] = useState(false);
     const [Inserts, setInserts] = useState([
         { nome: "passear com dog", descricao: "levar o bilu para passear", prazo: "10 horas", status: "1" },
         { nome: "comprar food", descricao: "comprar arroz, feijão e carne", prazo: "1 dia", status: "0" },
@@ -24,113 +24,142 @@ export default function Tarefa() {
 
     let [pagina, setPagina] = useState(5);
     const [busca, setBusca] = useState("");
+
     const filtrados = Inserts.filter((item) =>
         item.nome.toLowerCase().includes(busca.toLowerCase()) ||
         item.descricao.toLowerCase().includes(busca.toLowerCase())
     );
 
+    const handleSave = (novaTarefa) => {
+        setInserts([novaTarefa, ...Inserts]);
+    };
+
+    const controlemostra = {
+        descricaomostrar : true,
+        prazomostrar : true,
+        statusmostrar : true,
+        acoesmostrar : true,
+        nomemostrar : true,
+    }
+
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-950 to-slate-900 text-slate-100 font-sans">
-
+        <div className="min-h-screen flex flex-col bg-[#020617] text-white font-sans">
             <BlogHeader />
+            <div className="flex-1 min-h-0 px-2 py-2 sm:px-6 lg:px-8 flex items-center justify-center border-b border-[#0CAFF0]/20">
+                <div className="w-full max-w-5xl rounded-2xl border border-[#0CAFF0]/30 bg-[#020617]/80 p-6 backdrop-blur-md shadow-[0_0_25px_rgba(12,175,240,0.15)]">
+                    <div className="mb-5 flex justify-between items-end">
+                        <div className="flex-1 mr-4">
+                            <h2 className="text-sm text-[#52F2ED] mb-2">Buscar tarefas</h2>
+                            <input
+                                type="text"
+                                placeholder="Digite para buscar..."
+                                value={busca}
+                                onChange={(e) => setBusca(e.target.value)}
+                                className="w-full rounded-lg border border-[#0CAFF0]/30 bg-[#020617] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0CF09B]/40 transition"
+                            />
+                        </div>
+                        <button
+                            onClick={() => setOpen(true)}
+                            className="bg-[#0CAFF0] hover:bg-[#52F2ED] text-[#020617] font-bold px-4 py-2 rounded-lg transition"
+                        >
+                            + Nova Tarefa
+                        </button>
 
-            <div className="flex-1 min-h-0 px-2 py-2 sm:px-6 lg:px-8 flex items-center justify-center border-b bg-gradient-to-b from-slate-800 to-slate-950">
-
-                <div className="w-full max-w-5xl rounded-2xl border border-cyan-900/40 bg-slate-900/70 p-6 backdrop-blur-md shadow-xl">
-
-
-                    <div className="mb-5">
-                        <h2 className="text-sm text-slate-300 mb-2">Buscar tarefas</h2>
-                        <input
-                            type="text"
-                            placeholder="Digite para buscar..."
-                            value={busca}
-                            onChange={(e) => setBusca(e.target.value)}
-                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition"
+                        <Modal 
+                            isOpen={open} 
+                            onClose={() => setOpen(false)} 
+                            onSave={handleSave} 
                         />
                     </div>
 
+                    <div className="grid grid-cols-5 px-2 py-2 text-sm text-[#52F2ED] border-b border-[#0CAFF0]/20 mb-2">
+                        {controlemostra.nomemostrar && (
+                            <span>Nome</span>
+                        )}
 
-                    <div className="flex justify-between px-2 py-2 text-sm text-slate-400 border-b border-slate-700 mb-2">
-                        <span>Nome</span>
-                        <span>Descrição</span>
-                        <span>Prazo</span>
-                        <span>Status</span>
-                        <span>Ações</span>
+                        {controlemostra.descricaomostrar && (
+                            <span className="text-center">Descrição</span>
+                        )}
+
+                        {controlemostra.prazomostrar && (
+                            <span className="text-center">Prazo</span>
+                        )}
+
+                        {controlemostra.statusmostrar && (
+                            <span className="text-right">Status</span>
+                        )}
+
+                        {controlemostra.acoesmostrar && (
+                            <span className="text-right">Ações</span>
+                        )}
+                        
                     </div>
 
-                    <div className="rounded-lg border border-slate-800 bg-slate-900/60 min-h-36 p-3 space-y-2">
+                    <div className="rounded-lg border border-[#0CAFF0]/10 bg-[#020617]/60 min-h-36 p-3 space-y-2">
                         {filtrados
                             .slice(pagina - 5, pagina)
                             .map((insert, index) => (
+                                <div key={index} className="grid grid-cols-5 items-center px-2 py-2 rounded-md hover:bg-[#0CAFF0]/10 transition">
+                                    {controlemostra.nomemostrar && insert.nome && (
+                                        <div>
+                                            <p className="text-sm">{insert.nome}</p>
+                                        </div>
+                                        )}
 
-                                <div
-                                    key={index}
-                                    className="grid grid-cols-5 items-center px-2 py-2 rounded-md hover:bg-slate-800/60 transition"
-                                >
-                                    <div className="flex justify-start">
-                                        <p className="text-sm">{insert.nome}</p>
-                                    </div><div className="flex justify-center">
-                                        <p className="text-sm text-slate-400 truncate justify-center">{insert.descricao}</p>
-                                    </div>
-                                    <div className="flex justify-center">
-                                        <p className="text-sm text-slate-300 justify-end">{insert.prazo}</p>
-                                    </div>
+                                        {controlemostra.descricaomostrar && insert.descricao && (
+                                            <div>
+                                                <p className="text-sm text-center text-gray-400 truncate px-2">{insert.descricao}</p>
+                                            </div>
+                                        )}
+                                        {controlemostra.prazomostrar && insert.prazo && (
+                                            <div>
+                                                <p className="text-sm text-center text-gray-300">{insert.prazo}</p>
+                                            </div>
+                                        )}
+                                        {controlemostra.statusmostrar && insert.status && (
                                     <div className="flex justify-end">
                                         {insert.status === "1" ? (
-                                            <GiConfirmed className="text-emerald-400" />
+                                            <GiConfirmed className="text-[#0CF04D] text-lg" />
                                         ) : (
                                             <button
                                                 onClick={() => {
-                                                    const indexReal = Inserts.findIndex(i => i === insert);
                                                     const newInserts = [...Inserts];
-                                                    newInserts[indexReal].status = "1";
+                                                    const idx = Inserts.indexOf(insert);
+                                                    newInserts[idx].status = "1";
                                                     setInserts(newInserts);
                                                 }}
-                                                className="text-amber-400 hover:scale-110 transition"
+                                                className="text-[#0CAFF0] hover:text-[#0CF09B] transition"
                                             >
                                                 <FaRegClock />
                                             </button>
                                         )}
                                     </div>
-                                    <div className="flex justify-end">
-                                        <CiEdit className="text-cyan-400 hover:scale-110 transition cursor-pointer" />
-                                    </div>
+                                    )}
+                                    {controlemostra.acoesmostrar && (
+                                        <div className="flex justify-end">
+                                            <CiEdit className="text-[#0DEFE6] hover:text-white transition cursor-pointer text-xl" />
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                     </div>
 
-
-                    <div className="flex justify-end items-center mt-4 gap-3 text-sm text-slate-400">
-                        <span>Página</span>
-
+                    <div className="flex justify-end items-center mt-4 gap-3 text-sm text-[#52F2ED]">
                         <button
+                            disabled={pagina <= 5}
                             onClick={() => setPagina(pagina - 5)}
-                            className="p-1 rounded hover:bg-slate-800 transition"
+                            className="disabled:opacity-30"
                         >
-                            <Image
-                                src="/seta-direita.png"
-                                alt="Página anterior"
-                                width={20}
-                                height={20}
-                                className="rotate-180 opacity-70 hover:opacity-100"
-                            />
+                            <Image src="/seta-direita.png" alt="Anterior" width={20} height={20} className="rotate-180" />
                         </button>
-
                         <button
+                            disabled={pagina >= filtrados.length}
                             onClick={() => setPagina(pagina + 5)}
-                            className="p-1 rounded hover:bg-slate-800 transition"
+                            className="disabled:opacity-30"
                         >
-                            <Image
-                                src="/seta-direita.png"
-                                alt="Próxima página"
-                                width={20}
-                                height={20}
-                                className="opacity-70 hover:opacity-100"
-                            />
+                            <Image src="/seta-direita.png" alt="Próxima" width={20} height={20} />
                         </button>
                     </div>
-
                 </div>
             </div>
         </div>
