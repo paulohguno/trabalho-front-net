@@ -6,9 +6,11 @@ import { useState } from "react";
 import Image from "next/image";
 import BlogHeader from "@/components/ui/navbar";
 import Modal from "@/components/ui/modal";
+import Moedit from "@/components/ui/modaledit";
 
 export default function Tarefa() {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(null); // Alterado para suportar diferentes estados (null, "novo", "editar")
+    const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
     const [Inserts, setInserts] = useState([
         { nome: "passear com dog", descricao: "levar o bilu para passear", prazo: "10 horas", status: "1" },
         { nome: "comprar food", descricao: "comprar arroz, feijão e carne", prazo: "1 dia", status: "0" },
@@ -32,6 +34,14 @@ export default function Tarefa() {
 
     const handleSave = (novaTarefa) => {
         setInserts([novaTarefa, ...Inserts]);
+        setOpen(null);
+    };
+
+    const handleUpdate = (tarefaEditada) => {
+        const novosInserts = Inserts.map(t => t === tarefaSelecionada ? tarefaEditada : t);
+        setInserts(novosInserts);
+        setOpen(null);
+        setTarefaSelecionada(null);
     };
 
     const controlemostra = {
@@ -59,40 +69,25 @@ export default function Tarefa() {
                             />
                         </div>
                         <button
-                            onClick={() => setOpen(true)}
+                            onClick={() => setOpen("novo")}
                             className="bg-[#0CAFF0] hover:bg-[#52F2ED] text-[#020617] font-bold px-4 py-2 rounded-lg transition"
                         >
                             + Nova Tarefa
                         </button>
 
                         <Modal 
-                            isOpen={open} 
-                            onClose={() => setOpen(false)} 
+                            isOpen={open === "novo"} 
+                            onClose={() => setOpen(null)} 
                             onSave={handleSave} 
                         />
                     </div>
 
                     <div className="grid grid-cols-5 px-2 py-2 text-sm text-[#52F2ED] border-b border-[#0CAFF0]/20 mb-2">
-                        {controlemostra.nomemostrar && (
-                            <span>Nome</span>
-                        )}
-
-                        {controlemostra.descricaomostrar && (
-                            <span className="text-center">Descrição</span>
-                        )}
-
-                        {controlemostra.prazomostrar && (
-                            <span className="text-center">Prazo</span>
-                        )}
-
-                        {controlemostra.statusmostrar && (
-                            <span className="text-right">Status</span>
-                        )}
-
-                        {controlemostra.acoesmostrar && (
-                            <span className="text-right">Ações</span>
-                        )}
-                        
+                        {controlemostra.nomemostrar && <span>Nome</span>}
+                        {controlemostra.descricaomostrar && <span className="text-center">Descrição</span>}
+                        {controlemostra.prazomostrar && <span className="text-center">Prazo</span>}
+                        {controlemostra.statusmostrar && <span className="text-right">Status</span>}
+                        {controlemostra.acoesmostrar && <span className="text-right">Ações</span>}
                     </div>
 
                     <div className="rounded-lg border border-[#0CAFF0]/10 bg-[#020617]/60 min-h-36 p-3 space-y-2">
@@ -100,23 +95,23 @@ export default function Tarefa() {
                             .slice(pagina - 5, pagina)
                             .map((insert, index) => (
                                 <div key={index} className="grid grid-cols-5 items-center px-2 py-2 rounded-md hover:bg-[#0CAFF0]/10 transition">
-                                    {controlemostra.nomemostrar && insert.nome && (
+                                    {controlemostra.nomemostrar && (
                                         <div>
                                             <p className="text-sm">{insert.nome}</p>
                                         </div>
-                                        )}
+                                    )}
 
-                                        {controlemostra.descricaomostrar && insert.descricao && (
-                                            <div>
-                                                <p className="text-sm text-center text-gray-400 truncate px-2">{insert.descricao}</p>
-                                            </div>
-                                        )}
-                                        {controlemostra.prazomostrar && insert.prazo && (
-                                            <div>
-                                                <p className="text-sm text-center text-gray-300">{insert.prazo}</p>
-                                            </div>
-                                        )}
-                                        {controlemostra.statusmostrar && insert.status && (
+                                    {controlemostra.descricaomostrar && (
+                                        <div>
+                                            <p className="text-sm text-center text-gray-400 truncate px-2">{insert.descricao}</p>
+                                        </div>
+                                    )}
+                                    {controlemostra.prazomostrar && (
+                                        <div>
+                                            <p className="text-sm text-center text-gray-300">{insert.prazo}</p>
+                                        </div>
+                                    )}
+                                    {controlemostra.statusmostrar && (
                                     <div className="flex justify-end">
                                         {insert.status === "1" ? (
                                             <GiConfirmed className="text-[#0CF04D] text-lg" />
@@ -137,12 +132,26 @@ export default function Tarefa() {
                                     )}
                                     {controlemostra.acoesmostrar && (
                                         <div className="flex justify-end">
-                                            <CiEdit className="text-[#0DEFE6] hover:text-white transition cursor-pointer text-xl" />
+                                            <button onClick={() => {
+                                                setTarefaSelecionada(insert);
+                                                setOpen("editar");
+                                            }}>
+                                                <CiEdit className="text-[#0DEFE6] hover:text-white transition cursor-pointer text-xl" />
+                                            </button>
                                         </div>
                                     )}
                                 </div>
                             ))}
                     </div>
+                    <Moedit 
+                        isOpen={open === "editar"}
+                        onClose={() => {
+                            setOpen(null);
+                            setTarefaSelecionada(null);
+                        }}
+                        tarefa={tarefaSelecionada}
+                        onUpdate={handleUpdate}
+                    />
 
                     <div className="flex justify-end items-center mt-4 gap-3 text-sm text-[#52F2ED]">
                         <button
