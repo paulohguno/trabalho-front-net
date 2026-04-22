@@ -9,7 +9,7 @@ import Modal from "@/components/ui/modal";
 import Moedit from "@/components/ui/modaledit";
 
 export default function Tarefa() {
-    const [open, setOpen] = useState(null); // Alterado para suportar diferentes estados (null, "novo", "editar")
+    const [open, setOpen] = useState(null); 
     const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
     const [Inserts, setInserts] = useState([
         { nome: "passear com dog", descricao: "levar o bilu para passear", prazo: "10 horas", status: "1" },

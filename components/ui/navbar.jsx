@@ -31,7 +31,7 @@ const BlogHeader = () => {
                   </div>
                 ) : (
                   <Image
-                    src="/362240373_744967560763985_8936317494821023027_n.jpg"
+                    src="/1.png"
                     alt="Logo CRS"
                     width={32}
                     height={32}
@@ -44,6 +44,7 @@ const BlogHeader = () => {
                 </span>
               </a>
             </div>
+            
 
             {/* NAV DESKTOP */}
             <nav className="hidden md:flex items-center space-x-8">

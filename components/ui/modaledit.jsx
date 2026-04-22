@@ -35,7 +35,7 @@ export default function Moedit({ isOpen, onClose, tarefa, onUpdate }) {
                         value={form.descricao}
                         onChange={(e) => handleChange("descricao", e.target.value)}
                         className="w-full rounded-lg border border-[#0CAFF0]/30 bg-[#020617] px-3 py-2 text-white h-24"
-                        placeholder="Descrição"
+                        placeholder="Descricao"
                     />
                     <input
                         value={form.prazo}

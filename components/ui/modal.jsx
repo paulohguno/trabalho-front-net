@@ -37,7 +37,7 @@ export default function Modal({ isOpen, onClose, onSave }) {
                     value={form.descricao}
                     onChange={(e) => handleChange("descricao", e.target.value)}
                     className="mb-3 w-full border p-2 text-black rounded h-24"
-                    placeholder="Descrição"
+                    placeholder="Descricaoo"
                 />
 
                 <input
